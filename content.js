@@ -28,31 +28,37 @@ for (let activity of activities) {
 	const videoTitle = getVideoTitle(activity)
 	const videoUrl = getVideoUrl(activity)
 
-	let newDiv = document.createElement('div')
-
-	activity.parentElement.insertBefore(newDiv, activity.parentElement.children[1])
-
-	let newButton = document.createElement('input')
-	newButton.setAttribute('type', 'button')
-	newButton.setAttribute('value', '다운로드')
-	newButton.setAttribute('style', 'margin-left: 3em;')
-	newButton.onclick = () => {
+	let downloadButton = document.createElement('div')
+	downloadButton.setAttribute('type', 'button')
+	downloadButton.innerText = '다운로드'
+	downloadButton.setAttribute('id', `thuthi_progress_${index}`)
+	downloadButton.setAttribute('style', `
+		margin-left: 38px;
+		width:70px;
+		height: 30px;
+		text-align: center;
+		line-height: 30px;
+		
+		background: #005BAA;
+		border-radius: 15px;
+		text-transform: uppercase;
+		font-family: 'Open Sans';
+		font-size: 13px;
+		color: white;
+		position: relative;
+		cursor: pointer;
+	`)
+	downloadButton.onclick = () => {
 		chrome.runtime.sendMessage({action: 'DOWNLOAD', url: videoUrl, title: lectureTitle + '_' + videoTitle, id : index});
 	}
-	newDiv.appendChild(newButton)
-
-	let progressLabel = document.createElement('em')
-	progressLabel.setAttribute('id', `thuthi_progress_${index}`)
-	progressLabel.setAttribute('style', 'margin-left: 1em;')
-	newDiv.appendChild(progressLabel)
+	let id = Array.prototype.indexOf.call(activity.parentElement.children, activity)
+	activity.parentElement.insertBefore(downloadButton, activity.parentElement.children[id + 1])
 }
 
 function getVideoTitle(activity) {
 	let temp = activity.getElementsByClassName('instancename')[0].textContent.split(' ')
 	temp.pop()
-	temp = temp.join(' ').split('.mp4')
-	temp.pop()
-	return temp.join('')
+	return temp.join(' ').split('.mp4')[0].trim()
 }
 
 function getVideoUrl(activity) {

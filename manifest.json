@@ -16,7 +16,6 @@
 	},
 
 	"permissions": [
-		"tabs",
 		"http://plato.pusan.ac.kr/*/",
 		"https://plato.pusan.ac.kr/*/"
 	],
