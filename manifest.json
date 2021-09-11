@@ -1,0 +1,30 @@
+{
+	"manifest_version": 2,
+   
+	"name": "PLATO DOWNLOADER",
+	"description": "PLATO 강의 다운로더",
+	"version": "1.0",
+	"icons": {
+        "16": "default.png",
+        "48": "default.png",
+        "128": "default.png"
+    },
+	
+	"background": {
+		"scripts": ["background.js", "lib/mux-mp4.js", "lib/download.js", "lib/getm3u8.js"],
+		"persistent": true
+	},
+
+	"permissions": [
+		"tabs",
+		"http://plato.pusan.ac.kr/*/",
+		"https://plato.pusan.ac.kr/*/"
+	],
+
+	"content_scripts": [
+	    {
+	      "matches": ["https://plato.pusan.ac.kr/course/view.php?id=*"],
+	      "js": ["content.js"]
+	    }
+  	]
+  }
