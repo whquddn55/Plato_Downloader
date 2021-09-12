@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+
+<meta charset="utf-8">
+<html>
+	<head>
+		<style>
+			header {
+				display: flex;
+				justify-content: space-between;
+			}
+			body{
+				width:400px;
+			}
+			#loader {
+				border: 4px solid #f3f3f3; /* Light grey */
+				border-top: 4px solid #3498db; /* Blue */
+				border-radius: 50%;
+				width: 20px;
+				height: 20px;
+				animation: spin 0.5s linear infinite;
+				margin: auto;
+			}
+
+			@keyframes spin {
+				0% { transform: rotate(0deg); }
+				100% { transform: rotate(360deg); }
+			}
+
+			.itemBox {
+				width: 400px;
+				display: flex;
+				justify-content: space-between;
+			}
+			.item-left {
+				flex-grow: 1
+			}
+			.item-right {
+				width: 25px;
+				margin-top: auto;
+			}
+
+			.title {
+				font-weight: bold;
+			}
+
+			.progressBar {
+				content: attr(data-label);
+				-webkit-appearance: none;
+				-moz-appearance: none;
+				appearance: none;
+				display: block;
+				width: auto;
+				height: 10px;
+				border-radius: 7px;
+				color: #35495e;
+			}
+			.progressBar::-webkit-progress-bar {
+				background-color: #eee;
+				border-radius: 8px;
+			}
+			.progressBar::-webkit-progress-value {
+				background-color: var(--progressBar-background);
+				border-radius: 8px;
+			}
+			.progressBar::-moz-progress-bar {
+				background-color: #eee;
+				border-radius: 8px;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<h2 style = "margin: 0%">Plato Downloader</h2>
+		</header>
+		<hr>
+		<div id="loader"></div>
+
+		<div id="queue" style = "width: 400px;">
+			
+		</div>
+		<script src="popup.js"></script>
+	</body>
+</html>

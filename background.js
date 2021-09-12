@@ -4,6 +4,6 @@ chrome.runtime.onMessage.addListener(
 		if (request.action === 'DOWNLOAD') {
 			const url = await getm3u8(request.url)
 			console.log(url, request.title)
-			downloadVideo(url, request.title, request.id)
+			downloadVideo(url, request.title, sender.tab.id)
 		}
 	});
