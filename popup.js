@@ -40,8 +40,14 @@ function createNewItemBox(title, progressValue, color) {
 function setProgress(title, progress, color) {
 	const target = document.getElementById(title)
 	const progressValue = progress.indexOf('%') == -1 ? 100 : parseInt(progress.split('%')[0])
-	if (target === null) 
-		document.getElementById('queue').appendChild(createNewItemBox(title, progressValue, color))
+	if (target === null) {
+		const children = document.getElementById('queue').children
+		let idx = -1
+		for (child of children) 
+			if (child.id <= title) 
+				++idx
+		document.getElementById('queue').insertBefore(createNewItemBox(title, progressValue, color), children[idx + 1])
+	}
 	else{
 		target.style.setProperty('--progressBar-background', color)
 		target.getElementsByClassName('progressBar')[0].setAttribute('value', progressValue)

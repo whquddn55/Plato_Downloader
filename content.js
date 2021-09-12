@@ -2,9 +2,12 @@
 chrome.extension.onMessage.addListener(
 	(request, sender, sendResponse) => {
 		if (request.action === 'SET') {
-			if (document.getElementById(request.id) != undefined) {
-				document.getElementById(request.id).innerText = request.value
-				document.getElementById(request.id).style.color = request.color
+			const target = document.getElementById(request.id)
+			if (target != undefined) {
+				target.onclick = null
+				target.style.cursor = 'default'
+				target.innerText = request.value
+				target.style.color = request.color
 			}
 		}
 	});
