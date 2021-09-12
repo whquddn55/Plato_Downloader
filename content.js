@@ -2,8 +2,8 @@
 chrome.extension.onMessage.addListener(
 	(request, sender, sendResponse) => {
 		if (request.action === 'SET') {
-			const target = document.getElementById(request.id)
-			if (target != undefined) {
+			const targetList = document.getElementsByClassName(request.className)
+			for (const target of targetList) {
 				target.onclick = null
 				target.style.cursor = 'default'
 				target.innerText = request.value
@@ -27,11 +27,12 @@ for (let activity of activities) {
 
 	const videoTitle = lectureTitle + '_' + getVideoTitle(activity)
 	const videoUrl = getVideoUrl(activity)
+	const className = `${videoTitle}_download_btn`
 
 	let downloadButton = document.createElement('div')
 	downloadButton.setAttribute('type', 'button')
 	downloadButton.innerText = '다운로드'
-	downloadButton.setAttribute('id', `thuthi_progress_${videoTitle}`)
+	downloadButton.setAttribute('class', className)
 	downloadButton.setAttribute('style', `
 		margin-left: 38px;
 		width:70px;
@@ -49,7 +50,7 @@ for (let activity of activities) {
 		cursor: pointer;
 	`)
 	downloadButton.onclick = () => {
-		chrome.runtime.sendMessage({action: 'DOWNLOAD', url: videoUrl, title: videoTitle});
+		chrome.runtime.sendMessage({action: 'DOWNLOAD', url: videoUrl, title: videoTitle, className : className});
 	}
 	let id = Array.prototype.indexOf.call(activity.parentElement.children, activity)
 	activity.parentElement.insertBefore(downloadButton, activity.parentElement.children[id + 1])
