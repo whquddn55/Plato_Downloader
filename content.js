@@ -57,9 +57,14 @@ for (let activity of activities) {
 }
 
 function getVideoTitle(activity) {
-	let temp = activity.getElementsByClassName('instancename')[0].textContent.split(' ')
-	temp.pop()
-	return temp.join(' ').split('.mp4')[0].trim()
+	let temp = activity.getElementsByClassName('instancename')[0].textContent
+	let check = activity.getElementsByClassName('instancename')[0].getElementsByClassName('accesshide').length
+	if (check) {
+		temp = temp.split(' ')
+		temp.pop()
+		temp = temp.join(' ')
+	}
+	return temp.split('.mp4')[0].trim()
 }
 
 function getVideoUrl(activity) {
