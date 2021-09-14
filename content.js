@@ -14,7 +14,7 @@ chrome.extension.onMessage.addListener(
 
 let temp = document.getElementsByClassName('coursename')[0].title.split(' ')
 temp.pop()
-const lectureTitle = temp.join('')
+const lectureTitle = temp.join(' ')
 const activities = document.getElementsByClassName('activityinstance')
 
 for (let activity of activities) {
