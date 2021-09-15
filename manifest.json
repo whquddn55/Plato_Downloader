@@ -3,7 +3,7 @@
    
 	"name": "PLATO DOWNLOADER",
 	"description": "PLATO 강의 다운로더",
-	"version": "1.3",
+	"version": "1.4",
 	"icons": {
         "16": "default.png",
         "48": "default.png",
@@ -17,6 +17,10 @@
 	"background": {
 		"scripts": ["background.js", "lib/mux-mp4.js", "lib/download.js", "lib/getm3u8.js"]
 	},
+
+	"permissions": [
+		"contextMenus"
+	],
 
 	"content_scripts": [
 	    {
