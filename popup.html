@@ -7,40 +7,88 @@
 			header {
 				display: flex;
 				justify-content: space-between;
+				height: 25px;
 			}
 			body{
 				width:400px;
+				overflow: scoll;
 			}
-			#loader {
-				border: 4px solid #f3f3f3; /* Light grey */
-				border-top: 4px solid #3498db; /* Blue */
-				border-radius: 50%;
-				width: 20px;
-				height: 20px;
-				animation: spin 0.5s linear infinite;
-				margin: auto;
+			body::-webkit-scrollbar {
+				display: none;
 			}
-
-			@keyframes spin {
-				0% { transform: rotate(0deg); }
-				100% { transform: rotate(360deg); }
+			.item {
+				border-top: 1px solid #CCC;
+				margin: 4px 0px;
+				padding: 2px 5px;
 			}
-
-			.itemBox {
-				width: 400px;
-				display: flex;
-				justify-content: space-between;
-			}
-			.item-left {
-				flex-grow: 1
-			}
-			.item-right {
-				width: 25px;
-				margin-top: auto;
-			}
-
-			.title {
+			.itemTitle {
 				font-weight: bold;
+				font-size: 13px;
+				display: inline-block;
+				width: 300px;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.itemSubTitle{
+				display: inline-block;
+				width: 300px;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.downloadButton {
+				float: right;
+				margin: 3px;
+				width:70px;
+				height: 30px;
+				text-align: center;
+				line-height: 30px;
+				
+				background: #005BAA;
+				border-radius: 15px;
+				text-transform: uppercase;
+				font-family: 'Open Sans';
+				font-size: 13px;
+				color: white;
+				position: relative;
+				cursor: pointer;
+			}
+			.tabItem {
+				cursor: pointer;
+				padding: 5px;
+				flex-grow: 1;
+				flex-basis: 200px;
+				text-align:center;
+			}
+			.tabItem:hover {
+				background-color: #EEE;
+				transition: ease-in-out .3s;
+			}
+			.tabItem.selected {
+				background-color: #CCC;
+			}
+
+			.progressBox{
+				display: flex;
+				cursor:pointer;
+				justify-content: space-between;
+				border-top: 1px solid #CCC;
+				margin-top: 5px;
+			}
+
+			.progressItem-left{
+				width: 360px;
+			}
+			.progressItem-title {
+				display: inline-block;
+				width: 300px;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.progressItem-right{
+				width: 30px;
 			}
 
 			.progressBar {
@@ -66,17 +114,47 @@
 				background-color: #eee;
 				border-radius: 8px;
 			}
+			#tab {
+				display:flex; 
+				justify-content: space-evenly;
+			}
+			#hide,#reverseItem {
+				cursor: pointer;
+			}
+			#fileList,#queue {
+				max-height: 500px;
+				overflow: scroll;
+			}
+			#fileList::-webkit-scrollbar {
+				display: none;
+			}
+			#queue::-webkit-scrollbar {
+				display: none;
+			}
 		</style>
 	</head>
 	<body>
 		<header>
-			<h2 style = "margin: 0%">Plato Downloader</h2>
+			<h2 style = "margin: 0%"><span style= "color:#005BAA;">PNU</span> Video Downloader</h2>
+			<div>
+				<img id = "reverseItem" src='assets/sort.png' title = "정렬"/>
+				<img id = "hide" src = "assets/hide.png" title = "완료항목 숨기기"/>
+			</div>
 		</header>
 		<hr>
-		<div id="loader"></div>
-
-		<div id="queue" style = "width: 400px;">
+		<div id = "tab">
+			<div class = "tabItem selected">
+				파일 목록
+			</div>
+			<div class = "tabItem">
+				다운로드 상태
+			</div>
+		</div>
+		<div id = "fileList" style = "display:none;">
 			
+		</div>
+		<div id = "queue" style = "display:none;">
+
 		</div>
 		<script src="popup.js"></script>
 	</body>
