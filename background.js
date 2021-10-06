@@ -2,6 +2,12 @@ let requestList = []
 let progressMap = {}
 let fileObj = {}
 
+chrome.runtime.onInstalled.addListener((details) => {
+	if (details.reason == 'update' || details.reason == 'install') {
+		window.open(chrome.extension.getURL('assets/noti.html'), '테스트', `left=500 top=300 height=600 width=400 toolbar=no menubar=no location=no directories=no status=no scollbars=no resizble=no fullscreen=no channelmode=no titlebar=no scrollbars=no dialog=yes`)
+	}
+})
+
 chrome.storage.local.get(['progressMap'], (result) => {
 	progressMap = result.progressMap || {}
 })
@@ -45,25 +51,18 @@ chrome.runtime.onMessage.addListener(
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 	// 초기화
 	if (changeInfo.status == 'loading') {
-		chrome.browserAction.setBadgeText({text: '0'})
+		chrome.browserAction.setBadgeText({tabId: tabId, text: '0'})
 		delete fileObj[tabId]
 	}
 	if (changeInfo.status == 'complete' && tab.url) {
 		let fileList = await getFileList(tab.url, tab)
 		fileObj[tabId] = fileList
 		chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-			if (tabs && tabs[0].id == tabId)
-				chrome.browserAction.setBadgeText({text: String(fileObj[tabId].length)})
+			if (tabs && tabs.length && tabs[0].id == tabId)
+				chrome.browserAction.setBadgeText({tabId: tabId, text: String(fileObj[tabId].length)})
 		})
 	}
 })
-
-// tab change 시
-chrome.tabs.onActivated.addListener(function(activeInfo) {
-	// icon badge추가
-	chrome.browserAction.setBadgeText({text: String(fileObj[activeInfo.tabId] ? fileObj[activeInfo.tabId].length : 0)})
-
-});
  
 function downloadTS(tsUrlList, finishList, fileName, tsUrl) {
 	let downloadIndex = 0

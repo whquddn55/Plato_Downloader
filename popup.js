@@ -128,7 +128,7 @@ function timer() {
 	intervalRun()
 	setInterval(() => {
 		intervalRun()
-	}, 500);
+	}, 100);
 }
 
 function reverseList(item){
