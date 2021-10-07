@@ -3,7 +3,7 @@
    
 	"name": "PNU VIDEO DOWNLOADER",
 	"description": "PNU 비디오 다운로더",
-	"version": "2.0.1",
+	"version": "2.0.2",
 	"icons": {
         "16": "assets/default.png",
         "48": "assets/default.png",
@@ -15,7 +15,7 @@
     },
 	
 	"background": {
-		"scripts": ["background.js", "lib/jquery.js", "lib/ajax.js", "lib/downloadNormalFile.js", "lib/getFileList.js"]
+		"scripts": ["lib/crypto.js", "lib/jquery.js", "lib/ajax.js", "lib/downloadNormalFile.js", "lib/getFileList.js", "background.js"]
 	},
 
 	"web_accessible_resources": [

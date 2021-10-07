@@ -4,7 +4,7 @@ let fileObj = {}
 
 chrome.runtime.onInstalled.addListener((details) => {
 	if (details.reason == 'update' || details.reason == 'install') {
-		window.open(chrome.extension.getURL('assets/noti.html'), '테스트', `left=500 top=300 height=600 width=400 toolbar=no menubar=no location=no directories=no status=no scollbars=no resizble=no fullscreen=no channelmode=no titlebar=no scrollbars=no dialog=yes`)
+		window.open(chrome.extension.getURL('assets/noti.html'), '공지사항', `left=500 top=300 height=600 width=400 toolbar=no menubar=no location=no directories=no status=no scollbars=no resizble=no fullscreen=no channelmode=no titlebar=no scrollbars=no dialog=yes`)
 	}
 })
 
@@ -63,18 +63,18 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 		})
 	}
 })
- 
-function downloadTS(tsUrlList, finishList, fileName, tsUrl) {
+
+function downloadTS(tsUrlList, finishList, fileName, tsUrl, aesConf) {
 	let downloadIndex = 0
 	let mediaFileList = []
 	let finishNum = 0
 
-	let calculateColor = (f, e) => {
+	function calculateColor(f, e) {
 		const hue = (f / e * 120).toString(10);
 		return ["hsl(", hue, ",80%,50%)"].join("");
 	}
 
-	let calculateValue = (f, e) => {
+	function calculateValue(f, e) {
 		if (f == e) 
 			return '완료!'
 		let value = parseInt((f / e) * 100)
@@ -90,7 +90,7 @@ function downloadTS(tsUrlList, finishList, fileName, tsUrl) {
 		return res + '%'
 	}
 
-	let downloadFile = (fileDataList) => {
+	function downloadFile(fileDataList) {
 		let fileBlob = null
 		let a = document.createElement('a')
 		fileBlob = new Blob(fileDataList, { type: 'video/mp4' })
@@ -101,8 +101,16 @@ function downloadTS(tsUrlList, finishList, fileName, tsUrl) {
 		a.click()
 		a.remove()
 	}
+
+	function aesDecrypt(data, index) {
+		let iv = aesConf.iv || new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, index])
+		return aesConf.decryptor.decrypt(data, 0, iv.buffer || iv, true)
+	}
 	
-	let dealTS = (file, index, callback) => {
+	function dealTS(file, index, callback) {
+		if (aesConf.uri)
+			file = aesDecrypt(file, index)
+
 		mediaFileList[index] = file
 		finishList[index].status = 'finish'
 		finishNum++
@@ -123,7 +131,7 @@ function downloadTS(tsUrlList, finishList, fileName, tsUrl) {
 	}
 
 	let forceStop = false
-	let download = (index, depth) => {
+	function download(index, depth) {
 		if (forceStop)
 			return
 		if (index == undefined){
@@ -165,6 +173,13 @@ function downloadTS(tsUrlList, finishList, fileName, tsUrl) {
 }
 
 async function downloadVideo(url, fileName) {
+	let aesConf = {
+		method: '',
+        uri: '',
+        iv: '',
+        key: '',
+        decryptor: null,
+	}
 
 	function applyURL(targetURL, baseURL) {
 		baseURL = baseURL || location.href
@@ -180,10 +195,26 @@ async function downloadVideo(url, fileName) {
 		}
 	}
 
+	function getAES() {
+		return new Promise((resolve, reject) => {
+			ajax({
+				type: 'file',
+				url: aesConf.uri,
+				success: (key) => {
+					aesConf.key = key
+					aesConf.decryptor = new AESDecryptor()
+					aesConf.decryptor.constructor()
+					aesConf.decryptor.expandKey(aesConf.key);
+					resolve()
+				}
+			  })
+		})
+	}
+
 	ajax({
 		url: url,
 		type:'get',
-		success: (m3u8Str) => {
+		success: async (m3u8Str) => {
 			let tsUrlList = []
 			let finishList = []
 			m3u8Str.split('\n').forEach((item) => {
@@ -196,11 +227,20 @@ async function downloadVideo(url, fileName) {
 				}
 			})
 			if (tsUrlList.length > 0) { 
+				if (m3u8Str.indexOf('#EXT-X-KEY') > -1) {
+					aesConf.method = (m3u8Str.match(/(.*METHOD=([^,\s]+))/) || ['', '', ''])[2]
+					aesConf.uri = (m3u8Str.match(/(.*URI="([^"]+))"/) || ['', '', ''])[2]
+					aesConf.iv = (m3u8Str.match(/(.*IV=([^,\s]+))/) || ['', '', ''])[2]
+					aesConf.iv = aesConf.iv ? new TextEncoder().encode(aesConf.iv) : ''
+					aesConf.uri = applyURL(aesConf.uri, url)
+					await getAES()
+				}
+
 				progressMap[fileName] = {
 					progress : '0  %', color: '#FF0000'
 				}
 				chrome.runtime.sendMessage({action: 'PROGRESS', title: fileName, progress : '0  %', color: "#FF0000"});
-				downloadTS(tsUrlList, finishList, fileName, url)
+				downloadTS(tsUrlList, finishList, fileName, url, aesConf)
 			} else {
 				window.alert('에러코드 : 0x80808080')
 			}
