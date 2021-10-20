@@ -3,7 +3,7 @@
    
 	"name": "PNU VIDEO DOWNLOADER",
 	"description": "PNU 비디오 다운로더",
-	"version": "2.0.2",
+	"version": "2.0.3",
 	"icons": {
         "16": "assets/default.png",
         "48": "assets/default.png",
