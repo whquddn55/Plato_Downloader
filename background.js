@@ -103,6 +103,7 @@ function downloadTS(tsUrlList, finishList, fileName, tsUrl, aesConf) {
 	}
 
 	function aesDecrypt(data, index) {
+		index += 1
 		let iv = aesConf.iv || new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, index])
 		return aesConf.decryptor.decrypt(data, 0, iv.buffer || iv, true)
 	}
